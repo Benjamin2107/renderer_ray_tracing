@@ -1,5 +1,6 @@
 import math
-from .objects import Sphere
+from objects import Sphere
+
 
 class Vec3:
 
@@ -138,6 +139,20 @@ def color(point, max_color):
 
 
 def ray_color(ray):
+    sphere = Sphere(Vec3(0, 0, -1), 0.5, color(Vec3(1, 0, 0), 255))
+    t = sphere.hit_sphere(ray)
+    """
+    # red sphere
+    if sphere.hit_sphere(ray):
+        return color(Vec3(1, 0, 0), 255)
+    """
+    # gradient sphere
+    if t > 0.0:
+        vec = ray.get_position_along_ray(t) - Vec3(0, 0, -1)
+        vec = vec.normalize()
+        return color(Vec3(vec.get_x() + 1, vec.get_y() + 1, vec.get_z() + 1), 255) * 0.5
+
+    # all around the spheres
     unit_direction = ray.direction.normalize()
     t = 0.5 * (unit_direction.get_y() + 1.0)
     start_value = color(Vec3(1.0, 1.0, 1.0), 255)
