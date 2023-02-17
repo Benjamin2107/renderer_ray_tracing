@@ -7,18 +7,50 @@ class Sphere:
         self.radius = radius
         self.color = color
 
-    def hit_sphere(self, ray):
+    def hit_sphere(self, ray, t_min, t_max, rec):
         oc = ray.origin - self.center
-        a = ray.direction.dot_product(ray.direction)
-        b = 2.0 * oc.dot_product(ray.direction)
-        c = oc.dot_product(oc) - self.radius * self.radius
-        discriminant = b * b - 4 * a * c
+        a = ray.direction.squared()
+        half_b = oc.dot_product(ray.direction)
+        c = oc.squared() - self.radius * self.radius
+        discriminant = half_b * half_b - a * c
 
-        """
-        return discriminant > 0 
-        """
         if discriminant < 0:
-            return -1
-        else:
-            return (-b - math.sqrt(discriminant)) / (2.0 * a)
+            return False
 
+        sqrtd = math.sqrt(discriminant)
+        root = (-half_b - sqrtd) / a
+
+        if root < t_min or root > t_max:
+            root = (-half_b + sqrtd) / a
+            if root < t_min or root > t_max:
+                return False
+
+        rec.t = root
+        rec.p = ray.get_position_along_ray(root)
+        outward_normal = (rec.p - self.center) / self.radius
+        rec.set_face_normal(ray, outward_normal)
+        return True
+
+
+class HittableList:
+    def __init__(self, objects):
+        self.objects = objects
+
+    def add(self, object):
+        self.objects.append(object)
+
+    def clear(self):
+        self.objects.clear()
+
+    def hit(self, ray, t_min, t_max, rec):
+        temp_rec = rec
+        hit_anything = False
+        closest_so_far = t_max
+
+        for obj in self.objects:
+            if obj.hit_sphere(ray, t_min, closest_so_far, temp_rec):
+                hit_anything = True
+                closest_so_far = temp_rec.t
+                rec = temp_rec
+
+        return hit_anything, rec
