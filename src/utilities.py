@@ -6,6 +6,9 @@ class Vec3:
     def __init__(self, v0=0.0, v1=0.0, v2=0.0):
         self.v = [v0, v1, v2]
 
+    def __str__(self):
+        return f"{self.v[0]} - {self.v[1]} - {self.v[2]}"
+
     def get_x(self):
         return self.v[0]
 
@@ -131,9 +134,10 @@ class Camera:
 
 
 class HitRecord:
-    def __init__(self, p=Vec3(), normal=Vec3(), t=0.0, front_face=False):
+    def __init__(self, p=Vec3(), normal=Vec3(), color=Vec3(), t=0.0, front_face=False):
         self.p = p
         self.normal = normal
+        self.color = color
         self.t = t
         self.front_face = front_face
 
@@ -144,12 +148,16 @@ class HitRecord:
         else:
             self.normal = - outward_normal
 
+    def __str__(self):
+        return self.p
+
 
 def color(point, max_color):
-    point.v[0] = point.v[0] * max_color
-    point.v[1] = point.v[1] * max_color
-    point.v[2] = point.v[2] * max_color
-    return point
+    new_point = Vec3()
+    new_point.v[0] = point.v[0] * max_color
+    new_point.v[1] = point.v[1] * max_color
+    new_point.v[2] = point.v[2] * max_color
+    return new_point
 
 
 def ray_color(ray, hittables):
@@ -158,9 +166,8 @@ def ray_color(ray, hittables):
     rec = HitRecord()
     hit, rec = hittables.hit(ray, 0, math.inf, rec)
     if hit:
-        col = (color(rec.normal + Vec3(1, 1, 1), 255)) * 0.5
-        print("Hello")
-        return col
+        print(rec.color)
+        return rec.color
 
     """
     # red sphere
@@ -176,8 +183,8 @@ def ray_color(ray, hittables):
     # all around the spheres
     unit_direction = ray.direction.normalize()
     t = 0.5 * (unit_direction.get_y() + 1.0)
-    start_value = color(Vec3(1.0, 1.0, 1.0), 255)
-    end_value = color(Vec3(0.5, 0.7, 1.0), 255)
+    start_value = Vec3(1.0, 1.0, 1.0)
+    end_value = Vec3(0.5, 0.7, 1.0)
     return start_value * (1.0 - t) + end_value * t
 
 
