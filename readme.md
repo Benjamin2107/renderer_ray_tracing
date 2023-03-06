@@ -90,6 +90,9 @@ for (int j = image_height-1; j >= 0; --j)
 4. Compile and run program by redirection output to file: e.g., `renderer.exe > image.ppm`.
 5. Store code, resulting image and document steps.
 
+- Rendering Loop mit Gradienten Übergang siehe bild
+- python wege, ppms zu speichern (Pillow in Maschinensprache, Händisch, etc)
+- 
 Help: 
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 2: output image
 
@@ -137,6 +140,9 @@ color ray_color(Ray ray) {
 ```
 6. Run program, store the image, document steps.
 
+- Himmelbild
+- Utilities erklären
+
 Help:
 * Vectors: https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 3: The vec3 Class
 * Rays and camera: https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 4: Rays, a Simple Camera, and Background
@@ -169,6 +175,10 @@ Steps:
 5. For each generated camera ray in rendering loop, test for intersection all created sphere objects in 3D scene by calling `ray_color()` function. If ray intersects sphere object, assign sphere color to pixel from which this ray was generated.
 6. Run the program, store image and document steps.
 
+- Spheres, Hittables, Klassen erzeugt, 
+- Bild sieht aber aus als ob ein Filter darüber gelegt wurde (gradient sphere)
+- erst nach mitgeben der korrekten rec Color wird die richtige Farbe gezeigt und nicht mehr der Gradient
+
 Help:
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 5: Adding a Sphere
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 6: Surface Normals and Multiple Objects
@@ -184,6 +194,9 @@ Steps:
 1. For each pixel in image (rendering loop), generate multiple rays which are randomly positioned on pixel area.
 2. Render images with 1, 2, 4, 8 and 16 rays per pixel. 
 3. Store images, code and document steps.
+
+- Im bericht zeigen was der unterschied zwischen der verschiedenen Anzahl an Samples ist: Übergang ist glatter
+- auch für 100 noch besser
 
 Help:
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 7: Antialiasing

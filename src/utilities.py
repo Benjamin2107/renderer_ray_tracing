@@ -1,4 +1,5 @@
 import math
+import random
 
 
 class Vec3:
@@ -110,12 +111,17 @@ class Ray:
 
 
 class Camera:
-    def __init__(self, focal_length=1.0, aspect_ratio=None, origin=Vec3(0, 0, 0)):
+    def __init__(self, origin=Vec3(0, 0, 0), viewport_height=2.0, aspect_ratio=None, focal_length=1.0, ):
         if aspect_ratio is None:
             aspect_ratio = [16, 9]
-        self.focal_length = float(focal_length)
         self.aspect_ratio = float(aspect_ratio[0]) / float(aspect_ratio[1])
+        self.viewport_height = viewport_height
+        self.viewport_width = self.aspect_ratio * self.viewport_height
+        self.focal_length = float(focal_length)
         self.origin = origin
+        self.horizontal = Vec3(self.viewport_width, 0, 0)
+        self.vertical = Vec3(0, self.viewport_height, 0)
+        self.lower_left_corner = self.origin - self.horizontal / 2 - self.vertical / 2 - Vec3(0, 0, self.focal_length)
 
     def get_focal_length(self):
         return self.focal_length
@@ -131,6 +137,9 @@ class Camera:
 
     def get_width_from_height(self, image_height):
         return image_height * self.aspect_ratio
+
+    def get_ray(self, u, v):
+        return Ray(self.origin, self.lower_left_corner + self.horizontal * u + self.vertical * v- self.origin)
 
 
 class HitRecord:
@@ -166,7 +175,6 @@ def ray_color(ray, hittables):
     rec = HitRecord()
     hit, rec = hittables.hit(ray, 0, math.inf, rec)
     if hit:
-        print(rec.color)
         return rec.color
 
     """
@@ -188,3 +196,28 @@ def ray_color(ray, hittables):
     return start_value * (1.0 - t) + end_value * t
 
 
+def random_double():
+    return random.random()
+
+
+def clamp(x, min_val, max_val):
+    if x < min_val:
+        return min_val
+    if x > max_val:
+        return max_val
+    return x
+
+
+def write_color(img, pixel_color, samples_per_pixel, max_color=256):
+    r = pixel_color.get_x()
+    g = pixel_color.get_y()
+    b = pixel_color.get_z()
+
+    scale = 1.0 / samples_per_pixel
+    r *= scale
+    g *= scale
+    b *= scale
+
+    img.write(f"{int(max_color * clamp(r, 0.0, 0.999))} ")
+    img.write(f"{int(max_color * clamp(g, 0.0, 0.999))} ")
+    img.write(f"{int(max_color * clamp(b, 0.0, 0.999))} \n")
