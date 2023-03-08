@@ -71,6 +71,12 @@ class Vec3:
         self.icross_product(other)
         return Vec3(self.v[0], self.v[1], self.v[2])
 
+    def elementwise_product(self, other):
+        v1 = self.v[0] * other.v[0]
+        v2 = self.v[1] * other.v[1]
+        v3 = self.v[2] * other.v[2]
+        return Vec3(v1, v2, v3)
+
     def icross_product(self, other):
         v0 = self.v[1] * other.v[2] - self.v[2] * other.v[1]
         v1 = self.v[2] * other.v[0] - self.v[0] * other.v[2]
@@ -93,6 +99,10 @@ class Vec3:
         v1 = self.v[1] / length
         v2 = self.v[2] / length
         return Vec3(v0, v1, v2)
+
+    def near_zero(self):
+        s= 1e-8
+        return (self.v[0] < s) & (self.v[1] < s) & (self.v[2] < s)
 
 
 class Ray:
@@ -143,12 +153,13 @@ class Camera:
 
 
 class HitRecord:
-    def __init__(self, p=Vec3(), normal=Vec3(), color=Vec3(), t=0.0, front_face=False):
+    def __init__(self, p=Vec3(), normal=Vec3(), color=Vec3(), t=0.0, front_face=False, material=None):
         self.p = p
         self.normal = normal
         self.color = color
         self.t = t
         self.front_face = front_face
+        self.material = material
 
     def set_face_normal(self, r, outward_normal):
         self.front_face = r.direction.dot_product(outward_normal) < 0
@@ -177,16 +188,20 @@ def ray_color(ray, hittables, depth):
         return Vec3(0, 0, 0)
 
     hit, rec = hittables.hit(ray, 0.001, math.inf, rec)
-    if hit:
+    """if hit:
         # diffuse 1 with depth
         # target = rec.p + rec.normal + random_in_unit_sphere()
         # true lambertian
         #target = rec.p + rec.normal + random_unit_vector()
         # true lambertian with hemisphere
         target = rec.p + random_in_hemisphere(rec.normal)
-        return ray_color(Ray(rec.p, target - rec.p), hittables, depth-1) * 0.5
+        return ray_color(Ray(rec.p, target - rec.p), hittables, depth-1) * 0.5"""
         # return rec.color
-
+    if hit:
+        scattered, attenuation, scatter_bool = rec.material.scatter(ray, rec)
+        if scatter_bool:
+            return attenuation.elementwise_product(ray_color(scattered, hittables, depth-1))
+        return Vec3(0, 0, 0)
     """
     # red sphere
     if sphere.hit_sphere(ray):
@@ -257,3 +272,30 @@ def random_in_hemisphere(normal):
         return in_unit_sphere
     else:
         return -in_unit_sphere
+
+
+class Diffuse:
+
+    def __init__(self, albedo):
+        self.albedo = albedo
+
+    def scatter(self, r_in, rec):
+        scatter_direction = rec.normal + random_unit_vector()
+        if scatter_direction.near_zero():
+            scatter_direction = rec.normal
+        scattered = Ray(rec.p, scatter_direction)
+
+        attenuation = self.albedo
+        return scattered, attenuation, True
+
+
+def reflect(v, n):
+    return v - n * v.dot_product(n) * 2
+
+
+class Metal(Diffuse):
+    def scatter(self, r_in, rec):
+        reflected = reflect(r_in.direction.normalize(), rec.normal)
+        scattered = Ray(rec.p, reflected)
+        attenuation = self.albedo
+        return scattered, attenuation, (scattered.direction.dot_product(rec.normal) > 0)

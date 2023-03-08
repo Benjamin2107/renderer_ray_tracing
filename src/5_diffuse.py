@@ -10,7 +10,7 @@ def render(samples):
     image_width = 720
     image_height = int(camera.get__height_from_width(image_width))
 
-    # samples = [1, 2, 4, 8, 16]
+    samples = [1, 2, 4, 8, 16]
     max_depth = 50
 
     # red
@@ -30,7 +30,7 @@ def render(samples):
     Rendering Loop, adapted to needs for this task
     """
     for samples_per_pixel in samples:
-        with open(f"5_output_image/hemisphere_2_s_{samples_per_pixel}_spp_{max_depth}_md.ppm", "w") as img:
+        with open(f"5_output_image/9_metal/5_s_{samples_per_pixel}_spp_{max_depth}_md.ppm", "w") as img:
             print(f"Working on {samples_per_pixel} samples per pixel...")
             img.write(f"P3\n{image_width} {image_height}\n{max_color}\n")
 
@@ -47,13 +47,12 @@ def render(samples):
             img.close()
             print(f"Done on {samples_per_pixel} samples per pixel")
 
-
 if __name__ == '__main__':
     samples_p1 = [1, 2, 4, 8]
-    p1 = mp.Process(target=render, args=(samples_p1, ))
+    p1 = mp.Process(target=render, args=(samples_p1,))
 
     samples_p2 = [16]
-    p2 = mp.Process(target=render, args=(samples_p2, ))
+    p2 = mp.Process(target=render, args=(samples_p2,))
 
     samples_p3 = [32]
     p3 = mp.Process(target=render, args=(samples_p3,))

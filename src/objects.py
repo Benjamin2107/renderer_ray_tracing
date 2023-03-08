@@ -2,10 +2,10 @@ import math
 
 
 class Sphere:
-    def __init__(self, center, radius, color):
+    def __init__(self, center, radius, material):
         self.center = center
         self.radius = radius
-        self.color = color
+        self.material = material
 
     def hit_sphere(self, ray, t_min, t_max, rec):
         oc = ray.origin - self.center
@@ -29,7 +29,8 @@ class Sphere:
         rec.p = ray.get_position_along_ray(root)
         outward_normal = (rec.p - self.center) / self.radius
         rec.set_face_normal(ray, outward_normal)
-        rec.color = self.color
+        rec.color = self.material.albedo
+        rec.material = self.material
         return True
 
 
@@ -55,3 +56,8 @@ class HittableList:
                 rec = temp_rec
 
         return hit_anything, rec
+
+
+
+
+
