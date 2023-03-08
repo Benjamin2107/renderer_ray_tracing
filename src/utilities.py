@@ -169,13 +169,23 @@ def color(point, max_color):
     return new_point
 
 
-def ray_color(ray, hittables):
+def ray_color(ray, hittables, depth):
 
     # multiple spheres
     rec = HitRecord()
-    hit, rec = hittables.hit(ray, 0, math.inf, rec)
+    if depth <= 0:
+        return Vec3(0, 0, 0)
+
+    hit, rec = hittables.hit(ray, 0.001, math.inf, rec)
     if hit:
-        return rec.color
+        # diffuse 1 with depth
+        # target = rec.p + rec.normal + random_in_unit_sphere()
+        # true lambertian
+        #target = rec.p + rec.normal + random_unit_vector()
+        # true lambertian with hemisphere
+        target = rec.p + random_in_hemisphere(rec.normal)
+        return ray_color(Ray(rec.p, target - rec.p), hittables, depth-1) * 0.5
+        # return rec.color
 
     """
     # red sphere
@@ -196,8 +206,8 @@ def ray_color(ray, hittables):
     return start_value * (1.0 - t) + end_value * t
 
 
-def random_double():
-    return random.random()
+def random_double(min_val=0, max_val=1):
+    return min_val + (max_val - min_val) * random.random()
 
 
 def clamp(x, min_val, max_val):
@@ -214,10 +224,36 @@ def write_color(img, pixel_color, samples_per_pixel, max_color=256):
     b = pixel_color.get_z()
 
     scale = 1.0 / samples_per_pixel
-    r *= scale
-    g *= scale
-    b *= scale
+    r = math.sqrt(scale * r)
+    g = math.sqrt(scale * g)
+    b = math.sqrt(scale * b)
 
     img.write(f"{int(max_color * clamp(r, 0.0, 0.999))} ")
     img.write(f"{int(max_color * clamp(g, 0.0, 0.999))} ")
     img.write(f"{int(max_color * clamp(b, 0.0, 0.999))} \n")
+
+
+def random_vec3(min_val=0, max_val=1):
+    return Vec3(random_double(min_val, max_val), random_double(min_val, max_val), random_double(min_val, max_val))
+
+
+def random_in_unit_sphere():
+    while True:
+        p = random_vec3(-1, 1)
+        if p.squared() >= 1:
+            continue
+        return p
+
+
+def random_unit_vector():
+    p = random_in_unit_sphere()
+    p = p.normalize()
+    return p
+
+
+def random_in_hemisphere(normal):
+    in_unit_sphere = random_in_unit_sphere()
+    if in_unit_sphere.dot_product(normal) > 0.0:
+        return in_unit_sphere
+    else:
+        return -in_unit_sphere

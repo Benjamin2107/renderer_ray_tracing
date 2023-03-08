@@ -230,6 +230,8 @@ Steps:
 6. Render images with 1, 2, 4, 8 and 16 recursion limit. 
 7. Store images, code and document steps.
 
+- 8.4. mit 0.001 als t_start scheint nicht zu funktionieren. Nachdem ich das wieder rausgemacht habe, funktioniert lambertian wieder
+
 Help:
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 8: Diffuse Materials
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 9: Metal. This chapter can help to structure the code in modules.
