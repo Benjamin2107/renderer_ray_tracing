@@ -294,8 +294,12 @@ def reflect(v, n):
 
 
 class Metal(Diffuse):
+    def __init__(self, albedo, fuzz):
+        super().__init__(albedo)
+        self.fuzz = fuzz
+
     def scatter(self, r_in, rec):
         reflected = reflect(r_in.direction.normalize(), rec.normal)
-        scattered = Ray(rec.p, reflected)
+        scattered = Ray(rec.p, reflected + random_in_unit_sphere() * self.fuzz)
         attenuation = self.albedo
         return scattered, attenuation, (scattered.direction.dot_product(rec.normal) > 0)

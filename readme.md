@@ -261,7 +261,7 @@ Help:
 
 Specular reflection is characteristic of metal and dielectric materials. In this case, incoming light is reflected by surface back into 3D scene.
 
-Diffuse reflection is characteristic of dielectric materials. Diffuse reflection is due to light which refracts into surface, scatters inside (sub-surface scattering) and part which is not absorbed is re-emitted outside of surface. Since only part of refracted light is re-emitted, certain energy is lost and thus light will have different color. Therefore, diffuse reflection gives color to objects.
+Diffuse refl7ection is characteristic of dielectric materials. Diffuse reflection is due to light which refracts into surface, scatters inside (sub-surface scattering) and part which is not absorbed is re-emitted outside of surface. Since only part of refracted light is re-emitted, certain energy is lost and thus light will have different color. Therefore, diffuse reflection gives color to objects.
 
 Dielectric materials can also be transparent, that is transmissive. Light transmission happens when light ray refracts into surface, travels inside object and exits surface again refracting. Light traveling inside transparent surface can be absorbed resulting in translucent surfaces.
 

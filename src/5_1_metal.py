@@ -20,35 +20,30 @@ def render(max_depth):
     sphere2 = Sphere(Vec3(0, -100.5, -1), 100, material2)
     # blue
     material3 = Diffuse(Vec3(0, 0, 1))
-    sphere3 = Sphere(Vec3(0.5, -0.1, -0.75), 0.2, material3)
+    sphere3 = Sphere(Vec3(0.7, -0.2, -0.8), 0.2, material3)
     # turquoise
-    material4 = Diffuse(Vec3(0, 1, 1))
-    sphere4 = Sphere(Vec3(-0.5, -0.1, -0.75), 0.3, material4)
+    material4 = Diffuse(Vec3(0, 0.9, 0.9))
+    sphere4 = Sphere(Vec3(-0.7, -0.2, -0.75), 0.25, material4)
     # yellow
     material5 = Diffuse(Vec3(1, 1, 0))
     sphere5 = Sphere(Vec3(0, 0.5, -2), 1, material5)
+    #grey
+    material6 = Metal(Vec3(0.7, 0.7, 0.7), 0.0)
+    sphere6 = Sphere(Vec3(-0.3, -0.38, -0.7), 0.1, material6)
 
-    hittables = HittableList([sphere1, sphere2, sphere3, sphere4, sphere5])
+    material8 = Metal(Vec3(0.1, 0.8, 0.1), 0.0)
+    sphere8 = Sphere(Vec3(0.3, -0.25, -0.65), 0.1, material8)
+    # gold
+    material7 = Metal(Vec3(0.7, 0.3, 0.0), 0.9)
+    sphere7 = Sphere(Vec3(0.1, -0.35, -0.55), 0.1, material7)
 
-    """
-    Testwise, to see if working out the examples pictures work
-    
-    material_ground = Diffuse(Vec3(0.8, 0.8, 0.0))
-    material_center = Diffuse(Vec3(0.7, 0.3, 0.3))
-    material_left = Metal(Vec3(0.8, 0.8, 0.8))
-    material_right = Metal(Vec3(0.8, 0.6, 0.2))
+    hittables = HittableList([sphere1, sphere2, sphere3, sphere4, sphere5, sphere6, sphere7, sphere8])
 
-    ground = Sphere(Vec3(0.0, -100.5, -1.0), 100.0, material_ground)
-    center = Sphere(Vec3(0, 0, -1), 0.5, material_center)
-    left = Sphere(Vec3(-1, 0, -1), 0.5, material_left)
-    right = Sphere(Vec3(1, 0, -1), 0.5, material_right)
-    hittables = HittableList([ground, center, left, right])
-    """
     """
     Rendering Loop, adapted to needs for this task
     """
     for depth in max_depth:
-        with open(f"5_output_image/8_diffuse/5spheres_{samples}_spp_{depth}_depth.ppm", "w") as img:
+        with open(f"6_output_image/9_metal/8spheresfinal_{samples}_spp_{depth}_depth.ppm", "w") as img:
             print(f"Working on depth: {depth} for {samples} samples per pixel...")
             img.write(f"P3\n{image_width} {image_height}\n{max_color}\n")
 
@@ -65,14 +60,15 @@ def render(max_depth):
             img.close()
             print(f"Done on {depth} depth per pixel")
 
+
 if __name__ == '__main__':
-    depth_p1 = [1, 8]
+    depth_p1 = [2, 16]
     p1 = mp.Process(target=render, args=(depth_p1,))
 
-    depth_p2 = [16]
+    depth_p2 = [1, 32]
     p2 = mp.Process(target=render, args=(depth_p2,))
 
-    depth_p3 = [2, 4]
+    depth_p3 = [4, 8]
     p3 = mp.Process(target=render, args=(depth_p3,))
 
     p1.start()
