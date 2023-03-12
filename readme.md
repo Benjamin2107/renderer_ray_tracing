@@ -253,6 +253,8 @@ Steps:
 5. Render images with 1, 2, 4, 8 and 16 recursion limit. 
 6. Store images, code and document steps.
 
+-specular == metal 
+- elementwise product hinzugefügt
 Help:
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 9.4: Mirrored Light Reflection
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 9: Metal
@@ -278,6 +280,8 @@ Steps:
 4. Extend `ray_color()` function to use `Transmissive` material information while computing color after intersection test. Note that `ray_color()` must be recuirsive as discussed above.
 5. Render images with 1, 2, 4, 8 and 16 recursion limit. 
 6. Store images, code and document steps.
+
+- eine sphere mit transmissive bier (1,345) sieht witzig aus
 
 Help:
 * https://raytracing.github.io/books/RayTracingInOneWeekend.html, chapter 10: Dielectrics

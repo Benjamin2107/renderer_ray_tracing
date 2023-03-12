@@ -29,7 +29,6 @@ class Sphere:
         rec.p = ray.get_position_along_ray(root)
         outward_normal = (rec.p - self.center) / self.radius
         rec.set_face_normal(ray, outward_normal)
-        rec.color = self.material.albedo
         rec.material = self.material
         return True
 

@@ -153,10 +153,9 @@ class Camera:
 
 
 class HitRecord:
-    def __init__(self, p=Vec3(), normal=Vec3(), color=Vec3(), t=0.0, front_face=False, material=None):
+    def __init__(self, p=Vec3(), normal=Vec3(), t=0.0, front_face=False, material=None):
         self.p = p
         self.normal = normal
-        self.color = color
         self.t = t
         self.front_face = front_face
         self.material = material
@@ -303,3 +302,29 @@ class Metal(Diffuse):
         scattered = Ray(rec.p, reflected + random_in_unit_sphere() * self.fuzz)
         attenuation = self.albedo
         return scattered, attenuation, (scattered.direction.dot_product(rec.normal) > 0)
+
+
+def refract(v, n, etai_over_etat):
+    cos_theta = min(- v.dot_product(n), 1.0)
+    r_out_erp = (v + n * cos_theta) * etai_over_etat
+    r_out_parallel = n * (- math.sqrt(abs(1.0 - r_out_erp.squared())))
+    return r_out_erp + r_out_parallel
+
+
+class Transmissive:
+    def __init__(self, index_of_refraction):
+        self.index_of_refraction = index_of_refraction
+
+    def scatter(self, r_in, rec):
+        attenuation = Vec3(1, 1, 1)
+
+        if rec.front_face:
+            refraction_ratio = 1.0 / self.index_of_refraction
+        else:
+            refraction_ratio = self.index_of_refraction
+
+        unit_direction = r_in.direction.normalize()
+        refracted = refract(unit_direction, rec.normal, refraction_ratio)
+        scattered = Ray(rec.p, refracted)
+
+        return scattered, attenuation, True
