@@ -1,3 +1,4 @@
+import copy
 import math
 import random
 
@@ -121,17 +122,32 @@ class Ray:
 
 
 class Camera:
-    def __init__(self, origin=Vec3(0, 0, 0), viewport_height=2.0, aspect_ratio=None, focal_length=1.0, ):
+    def __init__(self, lookfrom=Vec3(), lookat=Vec3(), up=Vec3(), fov=20.0, aspect_ratio=None, focal_length=1.0):
         if aspect_ratio is None:
             aspect_ratio = [16, 9]
         self.aspect_ratio = float(aspect_ratio[0]) / float(aspect_ratio[1])
-        self.viewport_height = viewport_height
+        self.fov = fov
+        theta = math.radians(self.fov)
+        h = math.tan(theta / 2)
+        self.viewport_height = 2.0 * h
         self.viewport_width = self.aspect_ratio * self.viewport_height
+
+        w = lookfrom - lookat
+        w = w.normalize()
+        # deepcopy or else the value of the original values would get overwritten
+        wcopy = copy.deepcopy(w)
+        upcopy = copy.deepcopy(up)
+        u = upcopy.cross_product(w)
+        u = u.normalize()
+        v = wcopy.cross_product(u)
+
+        self.aspect_ratio = float(aspect_ratio[0]) / float(aspect_ratio[1])
+
         self.focal_length = float(focal_length)
-        self.origin = origin
-        self.horizontal = Vec3(self.viewport_width, 0, 0)
-        self.vertical = Vec3(0, self.viewport_height, 0)
-        self.lower_left_corner = self.origin - self.horizontal / 2 - self.vertical / 2 - Vec3(0, 0, self.focal_length)
+        self.origin = lookfrom
+        self.horizontal = u * self.viewport_width
+        self.vertical = v * self.viewport_height
+        self.lower_left_corner = self.origin - self.horizontal / 2 - self.vertical / 2 - w
 
     def get_focal_length(self):
         return self.focal_length
@@ -148,8 +164,8 @@ class Camera:
     def get_width_from_height(self, image_height):
         return image_height * self.aspect_ratio
 
-    def get_ray(self, u, v):
-        return Ray(self.origin, self.lower_left_corner + self.horizontal * u + self.vertical * v- self.origin)
+    def get_ray(self, s, t):
+        return Ray(self.origin, self.lower_left_corner + self.horizontal * s + self.vertical * t - self.origin)
 
 
 class HitRecord:
