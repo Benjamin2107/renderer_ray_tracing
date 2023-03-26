@@ -1,5 +1,5 @@
-from utilities import Vec3, ray_color, Camera, color, write_color, random_double
-from objects import Sphere, HittableList
+from src.utilities import Vec3, ray_color, Camera, color, write_color, random_double
+from src.objects import Sphere, HittableList
 
 camera = Camera()
 

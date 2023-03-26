@@ -1,5 +1,5 @@
-from utilities import Vec3, ray_color, Camera, write_color, random_double, Diffuse, Metal
-from objects import Sphere, HittableList
+from src.utilities import Vec3, ray_color, Camera, write_color, random_double, Diffuse, Metal
+from src.objects import Sphere, HittableList
 import multiprocessing as mp
 
 
