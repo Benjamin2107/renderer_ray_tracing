@@ -2,12 +2,29 @@ import math
 
 
 class Sphere:
+    """
+    Simple sphere class to add spheres into a scene
+    """
     def __init__(self, center, radius, material):
+        """
+        Initializes a new sphere.
+        :param center: origin of the sphere, Vec3
+        :param radius: radius of the sphere, float
+        :param material: material of the sphere, (Diffuse, Metal, Transmissive)
+        """
         self.center = center
         self.radius = radius
         self.material = material
 
     def hit_sphere(self, ray, t_min, t_max, rec):
+        """
+        Decides whether a ray hits a sphere or not.
+        :param ray: Incoming ray, Ray
+        :param t_min: lower interval limit to check, float
+        :param t_max: higher interval limit to check, float
+        :param rec: temporary HitRecord, HitRecord
+        :return: bool
+        """
         oc = ray.origin - self.center
         a = ray.direction.squared()
         half_b = oc.dot_product(ray.direction)
@@ -34,16 +51,40 @@ class Sphere:
 
 
 class HittableList:
+    """
+    Abstract class to store multiple spheres.
+    """
     def __init__(self, objects):
+        """
+        Initializes a new HittableList.
+        :param objects: Array(Sphere)
+        """
         self.objects = objects
 
     def add(self, object):
+        """
+        Adds a new sphere to the list.
+        :param object: Sphere to add to the list, Sphere
+        :return: HittableList
+        """
         self.objects.append(object)
 
     def clear(self):
+        """
+        Delete all spheres from the list.
+        :return: HittableList
+        """
         self.objects.clear()
 
     def hit(self, ray, t_min, t_max, rec):
+        """
+        Determines what sphere in the list (the nearest to the camera) got hit by the incoming ray.
+        :param ray: Incoming ray, Ray
+        :param t_min: lower interval limit to check, float
+        :param t_max: higher interval limit to check, float
+        :param rec: temporary HitRecord, HitRecord
+        :return: bool, HitRecord
+        """
         temp_rec = rec
         hit_anything = False
         closest_so_far = t_max
