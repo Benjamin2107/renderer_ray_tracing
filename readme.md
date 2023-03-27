@@ -1,5 +1,22 @@
 # Ray-tracing based renderer from scratch
 
+## Setup
+This project is done with python 3.9. To follow the steps, please use the following code:
+
+Clone the project
+````shell
+git clone https://github.com/Benjamin2107/renderer_ray_tracing.git
+````
+
+Setup the environment
+````shell
+cd renderer_ray_tracing/
+python -m venv env 
+. env/bin/activate #or on windows: '. env/Scripts/Activate'
+pip install -r requirements.txt
+````
+
+
 ## Introduction
 
 The goal of this project is to write ray-tracing based renderer from scratch.
